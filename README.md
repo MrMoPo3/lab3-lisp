@@ -74,5 +74,38 @@
 
 ### Тестування
 ```lisp
-
+Start testing insertion-sort-functional function
+test 1 passed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: (0 2 23
+                                                                       32 32 34
+                                                                       44 65 76
+                                                                       120 346)
+test 2 passed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: (-1 0
+                                                                           0 1
+                                                                           1 1
+                                                                           1 2
+                                                                           21
+                                                                           34
+                                                                           56
+                                                                           78
+                                                                           90
+                                                                           6751)
+test 3 passed! Expected: (2 3 4 9 34) Obtained: (2 3 4 9 34)
+EnD
+Start testing insertion-sort-imperative function
+test 1 failed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: #(0 2 23
+                                                                        32 32
+                                                                        34 44
+                                                                        65 76
+                                                                        120 346)
+test 2 failed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: #(-1
+                                                                            0 0
+                                                                            1 1
+                                                                            1 1
+                                                                            2
+                                                                            21
+                                                                            34
+                                                                            56
+                                                                            78
+                                                                            90
+                                                                            6751)
 ```
