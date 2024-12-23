@@ -19,93 +19,89 @@
 ## Варіант 14(6)
 Алгоритм сортування вставкою №1 (з лінійним пошуком зліва) за незменшенням.
 
-## Лістинг функції insert-tail
+## Лістинг функції insert-functional
 
 ```lisp
-(defun insert-tail (x sorted-list)
+(defun insert-functional (element sorted-list)
   (cond
-    ((null sorted-list) (list x))
-    ((<= x (car sorted-list)) (cons x sorted-list))
-    (t (cons (car sorted-list) (insert-tail x (cdr sorted-list))))))
+    ((null sorted-list) (list element))
+    ((<= element (car sorted-list)) (cons element sorted-list))
+    (t (cons (car sorted-list) (insert-functional element (cdr sorted-list))))))
 
-(defun insertion-sort-tail (unsorted-list acc)
+(defun insert-sort-functional (unsorted-list)
   (if (null unsorted-list)
-      acc
-      (insertion-sort-tail 
-       (cdr unsorted-list)
-       (insert-tail (car unsorted-list) acc))))
-
-(defun insertion-sort (unsorted-list)
-  (insertion-sort-tail unsorted-list nil))
+      nil
+      (insert-functional (car unsorted-list) (insert-sort-functional (cdr unsorted-list)))))
 
 ```
 
 ## Лістинг функції insert-imperative
 
 ```lisp
-(defun insert-imperative (x sorted-vector length)
+(defun insert-imperative (element sorted-vector vector-length)
   (let ((i 0))
-    (loop while (< i length) 
-          while (< (aref sorted-vector i) x) 
+    (loop while (< i vector-length)
+          while (< (aref sorted-vector i) element)
           do (incf i))
-    (loop for j from (1- length) downto i
+    (loop for j from (1- vector-length) downto i
           do (setf (aref sorted-vector (1+ j)) (aref sorted-vector j)))
-    (setf (aref sorted-vector i) x)))
+    (setf (aref sorted-vector i) element)))
 
-(defun insertion-sort-imperative (unsorted-list)
-  (let* ((length (length unsorted-list))
-         (sorted-vector (make-array length :initial-element nil))
+(defun insert-sort-imperative (unsorted-list)
+  (let* ((list-length (length unsorted-list))
+         (sorted-vector (make-array list-length :initial-element nil))
          (current-length 0))
-    (dolist (x unsorted-list (subseq sorted-vector 0 current-length))
-      (insert-imperative x sorted-vector current-length)
-      (incf current-length))))
+    (dolist (element unsorted-list)
+      (insert-imperative element sorted-vector current-length)
+      (incf current-length))
+    (subseq sorted-vector 0 current-length)))
 ```
 
-## Тестові набори для
+## Тестові набори для insertion-functional
 
 ```lisp
+(defun check-insertion-functional (test-name input expected)
+  "Execute functional insert-sort function on input, compare result with expected and print comparison status"
+  (let ((result (insert-sort-functional input)))
+    (format t "~:[~a failed! Expected: ~a Obtained: ~a~;~a passed! Expected: ~a Obtained: ~a~]~%"
+            (equal result expected)
+            test-name expected result)))
 
+(defun test-insertion-functional ()
+  (format t "Start testing functional insert-sort function~%")
+  (check-insertion-functional "test 1" '(346 23 0 32 44 76 2 120 34 32 65) '(0 2 23 32 32 34 44 65 76 120 346))
+  (check-insertion-functional "test 2" '(0 0 2 56 78 21 34 90 6751 1 1 1 -1 1) '(-1 0 0 1 1 1 1 2 21 34 56 78 90 6751))
+  (check-insertion-functional "test 3" '(3 4 2 9 34) '(2 3 4 9 34))
+  (format t "End~%"))
 ```
-## Тестові набори для
+## Тестові набори для insertion-imperative
 
 ```lisp
+(defun check-insertion-imperative (test-name input expected)
+  "Execute imperative insert-sort function on input, compare result with expected and print comparison status"
+  (let ((result (insert-sort-imperative input)))
+    (format t "~:[~a failed! Expected: ~a Obtained: ~a~;~a passed! Expected: ~a Obtained: ~a~]~%"
+            (equal result expected)
+            test-name expected result)))
 
+(defun test-insertion-imperative ()
+  (format t "Start testing imperative insert-sort function~%")
+  (check-insertion-imperative "test 1" '(346 23 0 32 44 76 2 120 34 32 65) '(0 2 23 32 32 34 44 65 76 120 346))
+  (check-insertion-imperative "test 2" '(0 0 2 56 78 21 34 90 6751 1 1 1 -1 1) '(-1 0 0 1 1 1 1 2 21 34 56 78 90 6751))
+  (check-insertion-imperative "test 3" '(3 4 2 9 34) '(2 3 4 9 34))
+  (format t "End~%"))
 ```
 
 ### Тестування
 ```lisp
-Start testing insertion-sort-functional function
-test 1 passed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: (0 2 23
-                                                                       32 32 34
-                                                                       44 65 76
-                                                                       120 346)
-test 2 passed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: (-1 0
-                                                                           0 1
-                                                                           1 1
-                                                                           1 2
-                                                                           21
-                                                                           34
-                                                                           56
-                                                                           78
-                                                                           90
-                                                                           6751)
+Start testing functional insert-sort function
+test 1 passed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: (0 2 23 32 32 34 44 65 76 120 346)
+test 2 passed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751)
 test 3 passed! Expected: (2 3 4 9 34) Obtained: (2 3 4 9 34)
-EnD
-Start testing insertion-sort-imperative function
-test 1 failed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: #(0 2 23
-                                                                        32 32
-                                                                        34 44
-                                                                        65 76
-                                                                        120 346)
-test 2 failed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: #(-1
-                                                                            0 0
-                                                                            1 1
-                                                                            1 1
-                                                                            2
-                                                                            21
-                                                                            34
-                                                                            56
-                                                                            78
-                                                                            90
-                                                                            6751)
+End
+Start testing imperative insert-sort function
+test 1 failed! Expected: (0 2 23 32 32 34 44 65 76 120 346) Obtained: #(0 2 23 32 32 34 44 65 76 120 346)
+test 2 failed! Expected: (-1 0 0 1 1 1 1 2 21 34 56 78 90 6751) Obtained: #(-1 0 0 1 1 1 1 2 21 34 56 78 90 6751)
+test 3 failed! Expected: (2 3 4 9 34) Obtained: #(2 3 4 9 34)
+End
 ```
