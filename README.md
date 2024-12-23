@@ -19,16 +19,46 @@
 ## Варіант 14(6)
 Алгоритм сортування вставкою №1 (з лінійним пошуком зліва) за незменшенням.
 
-## Лістинг функції 
+## Лістинг функції insert-tail
 
 ```lisp
-sdgf
+(defun insert-tail (x sorted-list)
+  (cond
+    ((null sorted-list) (list x))
+    ((<= x (car sorted-list)) (cons x sorted-list))
+    (t (cons (car sorted-list) (insert-tail x (cdr sorted-list))))))
+
+(defun insertion-sort-tail (unsorted-list acc)
+  (if (null unsorted-list)
+      acc
+      (insertion-sort-tail 
+       (cdr unsorted-list)
+       (insert-tail (car unsorted-list) acc))))
+
+(defun insertion-sort (unsorted-list)
+  (insertion-sort-tail unsorted-list nil))
+
 ```
 
-## Лістинг функції 
+## Лістинг функції insert-imperative
 
 ```lisp
+(defun insert-imperative (x sorted-vector length)
+  (let ((i 0))
+    (loop while (< i length) 
+          while (< (aref sorted-vector i) x) 
+          do (incf i))
+    (loop for j from (1- length) downto i
+          do (setf (aref sorted-vector (1+ j)) (aref sorted-vector j)))
+    (setf (aref sorted-vector i) x)))
 
+(defun insertion-sort-imperative (unsorted-list)
+  (let* ((length (length unsorted-list))
+         (sorted-vector (make-array length :initial-element nil))
+         (current-length 0))
+    (dolist (x unsorted-list (subseq sorted-vector 0 current-length))
+      (insert-imperative x sorted-vector current-length)
+      (incf current-length))))
 ```
 
 ## Тестові набори для
