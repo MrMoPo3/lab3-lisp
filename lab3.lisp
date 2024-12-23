@@ -16,16 +16,18 @@
           do (incf i))
     (loop for j from (1- vector-length) downto i
           do (setf (aref sorted-vector (1+ j)) (aref sorted-vector j)))
-    (setf (aref sorted-vector i) element)))
+    (setf (aref sorted-vector i) element))
 
 (defun insert-sort-imperative (unsorted-list)
   (let* ((list-length (length unsorted-list))
          (sorted-vector (make-array list-length :initial-element nil))
-         (current-length 0))
-    (dolist (element unsorted-list)
+         (current-length 0)
+         (unsorted-list-copy (copy-list unsorted-list))) ; Копія вхідного списку
+    (dolist (element unsorted-list-copy)
       (insert-imperative element sorted-vector current-length)
       (incf current-length))
     (subseq sorted-vector 0 current-length)))
+
 
 (defun check-insertion-functional (test-name input expected)
   "Execute functional insert-sort function on input, compare result with expected and print comparison status"
