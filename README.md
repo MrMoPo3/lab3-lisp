@@ -51,7 +51,6 @@
   (let* ((list-length (length unsorted-list))
          (sorted-vector (make-array list-length :initial-element nil))
          (current-length 0)
-         (unsorted-list-copy (copy-list unsorted-list)))
     (dolist (element unsorted-list-copy)
       (insert-imperative element sorted-vector current-length)
       (incf current-length))
